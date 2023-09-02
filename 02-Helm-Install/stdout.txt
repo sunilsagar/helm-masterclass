@@ -1,0 +1,119 @@
+ 
+❯ helm repo list
+NAME        	URL                               
+confluentinc	https://packages.confluent.io/helm
+❯ helm repo add mybitnami https://charts.bitnami.com/bitnami
+"mybitnami" has been added to your repositories
+❯ helm repo list
+NAME        	URL                               
+confluentinc	https://packages.confluent.io/helm
+mybitnami   	https://charts.bitnami.com/bitnami
+❯ helm search repo nginx
+NAME                              	CHART VERSION	APP VERSION	DESCRIPTION                                       
+mybitnami/nginx                   	15.2.0       	1.25.2     	NGINX Open Source is a web server that can be a...
+mybitnami/nginx-ingress-controller	9.8.0        	1.8.1      	NGINX Ingress Controller is an Ingress controll...
+mybitnami/nginx-intel             	2.1.15       	0.4.9      	DEPRECATED NGINX Open Source for Intel is a lig...
+❯ helm search repo mysql
+NAME                    	CHART VERSION	APP VERSION	DESCRIPTION                                       
+mybitnami/mysql         	9.12.1       	8.0.34     	MySQL is a fast, reliable, scalable, and easy t...
+mybitnami/phpmyadmin    	12.1.0       	5.2.1      	phpMyAdmin is a free software tool written in P...
+mybitnami/mariadb       	13.1.2       	11.0.3     	MariaDB is an open source, community-developed ...
+mybitnami/mariadb-galera	9.1.1        	11.0.3     	MariaDB Galera is a multi-primary database clus...
+❯
+
+❯ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "confluentinc" chart repository
+...Successfully got an update from the "mybitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+❯ helm install mynginx mybitnami/nginx
+NAME: mynginx
+LAST DEPLOYED: Sat Sep  2 23:40:50 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CHART NAME: nginx
+CHART VERSION: 15.2.0
+APP VERSION: 1.25.2
+
+** Please be patient while the chart is being deployed **
+NGINX can be accessed through the following DNS name from within your cluster:
+
+    mynginx.default.svc.cluster.local (port 80)
+
+To access NGINX from outside the cluster, follow the steps below:
+
+1. Get the NGINX URL by running these commands:
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace default -w mynginx'
+
+    export SERVICE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].port}" services mynginx)
+    export SERVICE_IP=$(kubectl get svc --namespace default mynginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo "http://${SERVICE_IP}:${SERVICE_PORT}"
+❯ 
+❯ helm list
+NAME   	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART       	APP VERSION
+mynginx	default  	1       	2023-09-02 23:40:50.408351 +0800 +08	deployed	nginx-15.2.0	1.25.2     
+❯ helm ls
+NAME   	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART       	APP VERSION
+mynginx	default  	1       	2023-09-02 23:40:50.408351 +0800 +08	deployed	nginx-15.2.0	1.25.2     
+❯ helm ls --output=yaml
+- app_version: 1.25.2
+  chart: nginx-15.2.0
+  name: mynginx
+  namespace: default
+  revision: "1"
+  status: deployed
+  updated: 2023-09-02 23:40:50.408351 +0800 +08
+❯ 
+❯ helm ls --output=json
+[{"name":"mynginx","namespace":"default","revision":"1","updated":"2023-09-02 23:40:50.408351 +0800 +08","status":"deployed","chart":"nginx-15.2.0","app_version":"1.25.2"}]
+❯ 
+❯ kubectl get deploy
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+mynginx   1/1     1            1           3m52s
+❯ kubectl get pod
+NAME                       READY   STATUS    RESTARTS   AGE
+mynginx-54db469c56-45nb4   1/1     Running   0          4m1s
+❯ kubectl get svc
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP        77d
+mynginx      LoadBalancer   10.111.158.65   localhost     80:30198/TCP   4m6s
+❯ curl http://localhost
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+❯ 
+❯ 
+❯ helm ls
+NAME   	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART       	APP VERSION
+mynginx	default  	1       	2023-09-02 23:40:50.408351 +0800 +08	deployed	nginx-15.2.0	1.25.2     
+❯ 
+❯ helm uninstall mynginx
+release "mynginx" uninstalled
+❯ helm ls
+NAME	NAMESPACE	REVISION	UPDATED	STATUS	CHART	APP VERSION
+❯ helm ls
