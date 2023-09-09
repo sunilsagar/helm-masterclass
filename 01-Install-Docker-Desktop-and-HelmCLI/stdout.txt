@@ -1,0 +1,22 @@
+❯ kubectl apply -f kube-manifests
+deployment.apps/myapp1-deployment created
+service/myapp1-nodeport-service created
+❯ kubectl get deploy
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+myapp1-deployment   2/2     2            2           55s
+❯ kubectl get svc
+NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes                ClusterIP   10.96.0.1       <none>        443/TCP        83d
+myapp1-nodeport-service   NodePort    10.105.132.54   <none>        80:31300/TCP   70s
+❯ 
+❯ kubectl delete -f kube-manifests
+deployment.apps "myapp1-deployment" deleted
+service "myapp1-nodeport-service" deleted
+❯ 
+❯ kubectl get pods
+No resources found in default namespace.
+❯ 
+❯ kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   83d
+❯
